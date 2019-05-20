@@ -9,6 +9,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class Game extends JPanel implements ActionListener{
+	final int WIDTH = 800;
+	final int HEIGHT = 600;
+	
 	private enum Vector2D{
 		U_LEFT_X,
 		U_LEFT_Y,
@@ -36,6 +39,8 @@ public class Game extends JPanel implements ActionListener{
 	
 	public Game(){
 		setBackground(Color.BLACK);
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		System.out.println(getSize().width + " " + getSize().height);
 		loadImages();
 		initGame();
 		addKeyListener(new KeyAdapter() {
@@ -46,6 +51,9 @@ public class Game extends JPanel implements ActionListener{
 				}
 				if(e.getKeyCode() == KeyEvent.VK_UP){
 					up = true;
+				}
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+					inGame = false;
 				}
 			}
 			@Override
@@ -78,13 +86,13 @@ public class Game extends JPanel implements ActionListener{
 	}
 	
 	public void createRoket2() {
-		vectRaket2[Vector2D.U_LEFT_X.ordinal()] = 776;
+		vectRaket2[Vector2D.U_LEFT_X.ordinal()] = 784;
 		vectRaket2[Vector2D.U_LEFT_Y.ordinal()] = 276;
-		vectRaket2[Vector2D.U_RIGHT_X.ordinal()] = 792;
+		vectRaket2[Vector2D.U_RIGHT_X.ordinal()] = 800;
 		vectRaket2[Vector2D.U_RIGHT_Y.ordinal()] = 276;
-		vectRaket2[Vector2D.D_LEFT_X.ordinal()] = 776;
+		vectRaket2[Vector2D.D_LEFT_X.ordinal()] = 784;
 		vectRaket2[Vector2D.D_LEFT_Y.ordinal()] = 324;
-		vectRaket2[Vector2D.D_RIGHT_X.ordinal()] = 792;
+		vectRaket2[Vector2D.D_RIGHT_X.ordinal()] = 800;
 		vectRaket2[Vector2D.D_RIGHT_Y.ordinal()] = 324;
 	}
 	
@@ -109,13 +117,13 @@ public class Game extends JPanel implements ActionListener{
 			g.drawImage(raket, vectRaket2[Vector2D.U_LEFT_X.ordinal()], vectRaket2[Vector2D.U_LEFT_Y.ordinal()], this);
 			g.drawImage(ball, vectBall[Vector2D.U_LEFT_X.ordinal()], vectBall[Vector2D.U_LEFT_Y.ordinal()], this);
 		}
-		else {
+		else{
 			g.setColor(Color.white);
 			if(player1W) {
 				g.drawString("PLAYER1 WON", 348, 275);
 			}
 			else {
-				g.drawString("PLAYER2 WON", 348, 275);
+				g.drawString("PLAYER1 WON", 348, 275);
 			}
 		}
 	}
@@ -129,7 +137,7 @@ public class Game extends JPanel implements ActionListener{
 			}
 		}
 		if(down){
-			if(vectRaket1[Vector2D.U_LEFT_Y.ordinal()] < 524){
+			if(vectRaket1[Vector2D.D_LEFT_Y.ordinal()] < 600){
 				for(int i = 1; i < 8; i += 2){
 					vectRaket1[i] += STEP;
 				}
@@ -168,31 +176,31 @@ public class Game extends JPanel implements ActionListener{
 	public void collision(){
 		if(vectBall[Vector2D.SPEED_X.ordinal()] < 0){
 			if (vectBall[Vector2D.U_LEFT_X.ordinal()] <= vectRaket1[Vector2D.U_RIGHT_X.ordinal()]){
-				if((vectBall[Vector2D.U_LEFT_Y.ordinal()] <= vectRaket1[Vector2D.D_RIGHT_Y.ordinal()]) &&
-						(vectBall[Vector2D.D_LEFT_Y.ordinal()] >= vectRaket1[Vector2D.U_RIGHT_Y.ordinal()])){
+				if((vectBall[Vector2D.U_LEFT_Y.ordinal()] <= vectRaket1[Vector2D.D_LEFT_Y.ordinal()]) &&
+						(vectBall[Vector2D.D_LEFT_Y.ordinal()] >= vectRaket1[Vector2D.U_LEFT_Y.ordinal()])){
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
-				if(vectBall[Vector2D.U_LEFT_X.ordinal()] <= 0){
+				if(vectBall[Vector2D.U_LEFT_X.ordinal()] < 16){
 					player1W = false;
 					inGame = false;
 				}
 			}
-			if(vectBall[Vector2D.U_LEFT_Y.ordinal()] <= 0 || vectBall[Vector2D.D_LEFT_Y.ordinal()] >= 574){
+			if(vectBall[Vector2D.U_LEFT_Y.ordinal()] <= 0 || vectBall[Vector2D.D_LEFT_Y.ordinal()] >= 600){
 				vectBall[Vector2D.SPEED_Y.ordinal()] *= -1;
 			}
 		}
 		else{
 			if (vectBall[Vector2D.U_RIGHT_X.ordinal()] >= vectRaket2[Vector2D.U_LEFT_X.ordinal()]){
-				if((vectBall[Vector2D.U_RIGHT_Y.ordinal()] <= vectRaket2[Vector2D.D_LEFT_Y.ordinal()]) &&
-						(vectBall[Vector2D.D_RIGHT_Y.ordinal()] >= vectRaket2[Vector2D.U_LEFT_Y.ordinal()])){
+				if((vectBall[Vector2D.U_LEFT_Y.ordinal()] <= vectRaket2[Vector2D.D_LEFT_Y.ordinal()]) &&
+						(vectBall[Vector2D.D_LEFT_Y.ordinal()] >= vectRaket2[Vector2D.U_LEFT_Y.ordinal()])){
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
-				if(vectBall[Vector2D.U_LEFT_X.ordinal()] >= 776){
+				if(vectBall[Vector2D.U_LEFT_X.ordinal()] > 786){
 					player1W = true;
 					inGame = false;
 				}
 			}
-			if(vectBall[Vector2D.U_LEFT_Y.ordinal()] <= 0 || vectBall[Vector2D.D_LEFT_Y.ordinal()] >= 574){
+			if(vectBall[Vector2D.U_LEFT_Y.ordinal()] <= 0 || vectBall[Vector2D.D_LEFT_Y.ordinal()] >= 600){
 				vectBall[Vector2D.SPEED_Y.ordinal()] *= -1;
 			}
 		}
@@ -211,6 +219,9 @@ public class Game extends JPanel implements ActionListener{
 			moveRaket1();
 			moveRaket2();
 			moveBall();
+		}
+		else {
+			System.exit(0);
 		}
 		repaint();
 	}
