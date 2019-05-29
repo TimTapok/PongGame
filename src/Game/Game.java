@@ -5,12 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import javax.swing.*;
+import components.*;
 
 public class Game extends JPanel implements ActionListener{
-	final int WIDTH = 800;
-	final int HEIGHT = 600;
+	//final int WIDTH = 800;
+	//final int HEIGHT = 600;
 	
 	private enum Vector2D{
 		U_LEFT_X,
@@ -36,11 +36,13 @@ public class Game extends JPanel implements ActionListener{
 	boolean down;
 	boolean inGame = true;
 	boolean player1W;
+	boolean inMenu;
 	
 	public Game(){
 		setBackground(Color.BLACK);
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		System.out.println(getSize().width + " " + getSize().height);
+		setPreferredSize(new Dimension(BackGround.WIGHT, BackGround.HEIGHT));
+		//setBounds(0, 0, WIDTH, HEIGHT);
+		
 		loadImages();
 		initGame();
 		addKeyListener(new KeyAdapter() {
@@ -53,7 +55,8 @@ public class Game extends JPanel implements ActionListener{
 					up = true;
 				}
 				if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-					inGame = false;
+					inGame = !inGame;
+					inMenu = !inMenu;
 				}
 			}
 			@Override
@@ -62,7 +65,7 @@ public class Game extends JPanel implements ActionListener{
 				down = false;
 			}
 		});
-		setFocusable(true);
+		setFocusable(true);//Focus Panel
 	}
 	
 	public void initGame(){
@@ -112,10 +115,11 @@ public class Game extends JPanel implements ActionListener{
 	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		if(inGame) {
-			g.drawImage(raket, vectRaket1[Vector2D.U_LEFT_X.ordinal()], vectRaket1[Vector2D.U_LEFT_Y.ordinal()], this);
-			g.drawImage(raket, vectRaket2[Vector2D.U_LEFT_X.ordinal()], vectRaket2[Vector2D.U_LEFT_Y.ordinal()], this);
-			g.drawImage(ball, vectBall[Vector2D.U_LEFT_X.ordinal()], vectBall[Vector2D.U_LEFT_Y.ordinal()], this);
+		g.drawImage(raket, vectRaket1[Vector2D.U_LEFT_X.ordinal()], vectRaket1[Vector2D.U_LEFT_Y.ordinal()], this);
+		g.drawImage(raket, vectRaket2[Vector2D.U_LEFT_X.ordinal()], vectRaket2[Vector2D.U_LEFT_Y.ordinal()], this);
+		g.drawImage(ball, vectBall[Vector2D.U_LEFT_X.ordinal()], vectBall[Vector2D.U_LEFT_Y.ordinal()], this);
+		/*if(inGame) {
+			
 		}
 		else{
 			g.setColor(Color.white);
@@ -125,8 +129,9 @@ public class Game extends JPanel implements ActionListener{
 			else {
 				g.drawString("PLAYER1 WON", 348, 275);
 			}
-		}
+		}*/
 	}
+	
 	
 	public void moveRaket1(){
 		if(up){
@@ -220,9 +225,12 @@ public class Game extends JPanel implements ActionListener{
 			moveRaket2();
 			moveBall();
 		}
+		else if(inMenu){
+			
+		}
 		else {
 			System.exit(0);
 		}
 		repaint();
 	}
-}
+} 	

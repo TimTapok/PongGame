@@ -5,12 +5,29 @@ import javax.swing.*;
 import Game.*;
 
 public class Window extends JFrame{
-	final int WIDTH = 800;
-	final int HEIGHT = 600;
+	public final int WIDTH = 800;
+	public final int HEIGHT = 600;
 	
 	Window(){
 		setTitle("Pong Game");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		/*
+		JLayeredPane lpane = new JLayeredPane();
+		add(lpane);
+		lpane.setBounds(0, 0, WIDTH, HEIGHT);
+		
+		JPanel panel0 = new JPanel();
+		panel0.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		
+		
+		JPanel panel1 = new JPanel();
+		panel1.setBackground(Color.BLACK);
+		panel1.setBounds(0, 0, 800, 600);
+		panel1.setOpaque(true);
+		
+		lpane.add(panel1, new Integer(0), 0);
+
+		add(panel0);*/
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((screenSize.width - WIDTH) / 2, (screenSize.height - HEIGHT) / 2);
