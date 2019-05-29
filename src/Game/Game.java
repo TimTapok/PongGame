@@ -9,8 +9,9 @@ import javax.swing.*;
 import components.*;
 
 public class Game extends JPanel implements ActionListener{
-	//final int WIDTH = 800;
-	//final int HEIGHT = 600;
+	
+	private JPanel mainMenu;
+	private JButton button1;
 	
 	private enum Vector2D{
 		U_LEFT_X,
@@ -32,20 +33,29 @@ public class Game extends JPanel implements ActionListener{
 	private int vectRaket2[] = new int[8];
 	private int vectBall[] = new int[10];
 	private Timer timer;
-	boolean up;
-	boolean down;
-	boolean inGame = true;
-	boolean player1W;
-	boolean inMenu;
+	private boolean up;
+	private boolean down;
+	private boolean esc;
+	private boolean inGame = true;
+	private boolean player1W;
+	private boolean inMenu;
 	
 	public Game(){
 		setBackground(Color.BLACK);
-		setPreferredSize(new Dimension(BackGround.WIGHT, BackGround.HEIGHT));
-		//setBounds(0, 0, WIDTH, HEIGHT);
+		setPreferredSize(BackGround.dimensionFrame);
+		setLayout(null);
+		
+		mainMenu = new JPanel();
+        mainMenu.setBounds(300, 100, 200, 400);
+        mainMenu.setBackground(Color.BLUE);
+        button1 = new JButton("button");
+        mainMenu.add(button1, new GridBagLayout());
+        add(mainMenu);
 		
 		loadImages();
 		initGame();
-		addKeyListener(new KeyAdapter() {
+		
+			addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_DOWN){
@@ -56,16 +66,19 @@ public class Game extends JPanel implements ActionListener{
 				}
 				if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 					inGame = !inGame;
-					inMenu = !inMenu;
+					inMenu = !inMenu;/*
+					if(esc == false) {
+						menu();
+					}*/
 				}
 			}
 			@Override
 			public void keyReleased(KeyEvent e){
 				up = false;
 				down = false;
+				esc = false;
 			}
 		});
-		setFocusable(true);//Focus Panel
 	}
 	
 	public void initGame(){
@@ -131,7 +144,6 @@ public class Game extends JPanel implements ActionListener{
 			}
 		}*/
 	}
-	
 	
 	public void moveRaket1(){
 		if(up){
@@ -218,19 +230,38 @@ public class Game extends JPanel implements ActionListener{
 		ball = iball.getImage();
 	}
 
+	public void remMenu() {
+		remove(mainMenu);
+		repaint();
+	    revalidate();
+	}
+	
+	public void menu() {
+		esc = true;
+		
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(inGame){
+			mainMenu.setVisible(false);
+			setFocusable(true);
 			moveRaket1();
 			moveRaket2();
 			moveBall();
 		}
 		else if(inMenu){
-			
+			mainMenu.setVisible(true);
+			setFocusable(true);
 		}
 		else {
 			System.exit(0);
 		}
 		repaint();
 	}
+	
+	@Override
+    public boolean isOptimizedDrawingEnabled() {
+        return false;
+    }
 } 	

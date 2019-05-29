@@ -3,10 +3,10 @@ package Window;
 import java.awt.*;
 import javax.swing.*;
 import Game.*;
+import components.*;
 
 public class Window extends JFrame{
-	public final int WIDTH = 800;
-	public final int HEIGHT = 600;
+	
 	
 	Window(){
 		setTitle("Pong Game");
@@ -30,7 +30,7 @@ public class Window extends JFrame{
 		add(panel0);*/
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((screenSize.width - WIDTH) / 2, (screenSize.height - HEIGHT) / 2);
+		setLocation((screenSize.width - BackGround.WIDTH) / 2, (screenSize.height - BackGround.HEIGHT) / 2);
 		
 		add(new Game());
 		
