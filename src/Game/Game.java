@@ -3,8 +3,12 @@ package Game;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Random;
+
 import javax.swing.*;
 import components.*;
 import javafx.scene.layout.Border;
@@ -13,6 +17,7 @@ public class Game extends JPanel implements ActionListener{
 	
 	private JPanel mainMenu;
 	private JButton button1, button2;
+	JCheckBox hardBox;
 	
 	private enum Vector2D{
 		U_LEFT_X,
@@ -27,6 +32,7 @@ public class Game extends JPanel implements ActionListener{
 		SPEED_Y;
 	}
 
+	private Random rand = new Random();
 	private Timer timer = null;
 	private final int STEP = 6;
 	private Image raket;
@@ -34,12 +40,11 @@ public class Game extends JPanel implements ActionListener{
 	private int vectRaket1[] = new int[8];
 	private int vectRaket2[] = new int[8];
 	private int vectBall[] = new int[10];
-	private boolean hardMode = true;
+	private boolean hardM = false;
 	private boolean up;
 	private boolean down;
 	private boolean esc;
 	private boolean inGame = true;
-	private boolean player1W;
 	private boolean inMenu;
 	
 	public Game(){
@@ -75,8 +80,18 @@ public class Game extends JPanel implements ActionListener{
             }
        });
         
+        hardBox = new JCheckBox("Hard Mode!");
+        hardBox.setBounds(50, 90, 100, 16);
+        hardBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+				hardM = !hardM;
+			}
+        });
+        
         mainMenu.add(button1);
         mainMenu.add(button2);
+        mainMenu.add(hardBox);
         add(mainMenu);
 		
 		loadImages();
@@ -139,14 +154,16 @@ public class Game extends JPanel implements ActionListener{
 	}
 	
 	public void createBall() {
-		vectBall[Vector2D.U_LEFT_X.ordinal()] = 400;
-		vectBall[Vector2D.U_LEFT_Y.ordinal()] = 300;
-		vectBall[Vector2D.U_RIGHT_X.ordinal()] = 416;
-		vectBall[Vector2D.U_RIGHT_Y.ordinal()] = 300;
-		vectBall[Vector2D.D_LEFT_X.ordinal()] = 400;
-		vectBall[Vector2D.D_LEFT_Y.ordinal()] = 316;
-		vectBall[Vector2D.D_RIGHT_X.ordinal()] = 416;
-		vectBall[Vector2D.D_RIGHT_Y.ordinal()] = 316;
+		int Ux = rand.nextInt(300) + 300;
+		int Uy = rand.nextInt(400) + 100;
+		vectBall[Vector2D.U_LEFT_X.ordinal()] = Ux;
+		vectBall[Vector2D.U_LEFT_Y.ordinal()] = Uy;
+		vectBall[Vector2D.U_RIGHT_X.ordinal()] = Ux + 16;
+		vectBall[Vector2D.U_RIGHT_Y.ordinal()] = Uy;
+		vectBall[Vector2D.D_LEFT_X.ordinal()] = Ux;
+		vectBall[Vector2D.D_LEFT_Y.ordinal()] = Uy + 16;
+		vectBall[Vector2D.D_RIGHT_X.ordinal()] = Ux + 16;
+		vectBall[Vector2D.D_RIGHT_Y.ordinal()] = Uy;
 		vectBall[Vector2D.SPEED_X.ordinal()] = -2;
 		vectBall[Vector2D.SPEED_Y.ordinal()] = -2;
 	}
@@ -179,7 +196,7 @@ public class Game extends JPanel implements ActionListener{
 	}
 
 	public void moveRaket2() {
-		if(hardMode == true) {
+		if(hardM == true) {
 			if(vectBall[Vector2D.SPEED_X.ordinal()] > 0 && vectBall[Vector2D.U_RIGHT_X.ordinal()] > 500) {
 				if(vectBall[Vector2D.U_RIGHT_Y.ordinal()] < vectRaket2[Vector2D.D_LEFT_Y.ordinal()] - 24) {
 					if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] > 0) {
@@ -199,7 +216,23 @@ public class Game extends JPanel implements ActionListener{
 			}
 		}
 		else {
-			
+			if(vectBall[Vector2D.SPEED_X.ordinal()] > 0 && vectBall[Vector2D.U_RIGHT_X.ordinal()] > 500) {
+				if(vectBall[Vector2D.U_RIGHT_Y.ordinal()] < vectRaket2[Vector2D.D_LEFT_Y.ordinal()] - 48) {
+					if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] > 0) {
+						for(int i = 1; i < 8; i += 2){
+							vectRaket2[i] -= (rand.nextInt(STEP) + 1);
+						}
+					}
+				}
+				
+				if(vectBall[Vector2D.D_RIGHT_Y.ordinal()] > vectRaket2[Vector2D.U_LEFT_Y.ordinal()] + 48) {
+					if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] < 524){
+						for(int i = 1; i < 8; i += 2){
+							vectRaket2[i] += (rand.nextInt(STEP) + 1);
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -220,7 +253,7 @@ public class Game extends JPanel implements ActionListener{
 						(vectBall[Vector2D.D_LEFT_Y.ordinal()] >= vectRaket1[Vector2D.U_LEFT_Y.ordinal()])){
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
-				if(vectBall[Vector2D.U_LEFT_X.ordinal()] < 16){
+				if(vectBall[Vector2D.U_LEFT_X.ordinal()] <= 0){
 					inMenu = false;
 					inGame = false;
 				}
@@ -235,7 +268,7 @@ public class Game extends JPanel implements ActionListener{
 						(vectBall[Vector2D.D_LEFT_Y.ordinal()] >= vectRaket2[Vector2D.U_LEFT_Y.ordinal()])){
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
-				if(vectBall[Vector2D.U_LEFT_X.ordinal()] > 786){
+				if(vectBall[Vector2D.U_LEFT_X.ordinal()] >= 800){
 					inMenu = false;
 					inGame = false;
 				}
@@ -253,17 +286,12 @@ public class Game extends JPanel implements ActionListener{
 		ImageIcon iball = new ImageIcon("Images/ball.png");
 		ball = iball.getImage();
 	}
-
-	public void remMenu() {
-		remove(mainMenu);
-		repaint();
-	    revalidate();
-	}
 	
 	public void menu() {
 		mainMenu.setVisible(true);
 		button1.setFocusable(false);
 		button2.setFocusable(false);
+		hardBox.setFocusable(false);
 		if(esc == false) {
 			esc = true;
 			
