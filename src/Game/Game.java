@@ -7,11 +7,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 import components.*;
+import javafx.scene.layout.Border;
 
 public class Game extends JPanel implements ActionListener{
 	
 	private JPanel mainMenu;
-	private JButton button1;
+	private JButton button1, button2;
 	
 	private enum Vector2D{
 		U_LEFT_X,
@@ -26,13 +27,14 @@ public class Game extends JPanel implements ActionListener{
 		SPEED_Y;
 	}
 
+	private Timer timer = null;
 	private final int STEP = 6;
 	private Image raket;
 	private Image ball;
 	private int vectRaket1[] = new int[8];
 	private int vectRaket2[] = new int[8];
 	private int vectBall[] = new int[10];
-	private Timer timer;
+	private boolean hardMode = true;
 	private boolean up;
 	private boolean down;
 	private boolean esc;
@@ -42,20 +44,45 @@ public class Game extends JPanel implements ActionListener{
 	
 	public Game(){
 		setBackground(Color.BLACK);
-		setPreferredSize(BackGround.dimensionFrame);
+		setPreferredSize(new Dimension(BackGround.WIDTH, BackGround.HEIGHT));
 		setLayout(null);
 		
 		mainMenu = new JPanel();
+		mainMenu.setLayout(null);
         mainMenu.setBounds(300, 100, 200, 400);
-        mainMenu.setBackground(Color.BLUE);
-        button1 = new JButton("button");
-        mainMenu.add(button1, new GridBagLayout());
+        mainMenu.setBackground(new Color(66, 48, 88, 150));
+        button1 = new JButton("New Game");
+        button1.setBounds(50, 20, 100, 50);
+        
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+         	   if(e.getActionCommand().equals("New Game")) {
+    				initGame();
+    				inGame = true;
+    				inMenu = false;
+    			}
+            }
+       });
+        
+        button2 = new JButton("Exit");
+        button2.setBounds(50, 160, 100, 50);
+        
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+         	   if(e.getActionCommand().equals("Exit")) {
+    				System.exit(0);
+    			}
+            }
+       });
+        
+        mainMenu.add(button1);
+        mainMenu.add(button2);
         add(mainMenu);
 		
 		loadImages();
 		initGame();
 		
-			addKeyListener(new KeyAdapter() {
+		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_DOWN){
@@ -66,10 +93,7 @@ public class Game extends JPanel implements ActionListener{
 				}
 				if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 					inGame = !inGame;
-					inMenu = !inMenu;/*
-					if(esc == false) {
-						menu();
-					}*/
+					inMenu = !inMenu;
 				}
 			}
 			@Override
@@ -86,8 +110,10 @@ public class Game extends JPanel implements ActionListener{
 		createRoket2();
 		createBall();
 		
-		timer = new Timer(10, this);
-		timer.start();
+		if(timer == null) {
+			timer = new Timer(10, this);
+			timer.start();
+		}
 	}
 	
 	public void createRaket1() {
@@ -131,19 +157,9 @@ public class Game extends JPanel implements ActionListener{
 		g.drawImage(raket, vectRaket1[Vector2D.U_LEFT_X.ordinal()], vectRaket1[Vector2D.U_LEFT_Y.ordinal()], this);
 		g.drawImage(raket, vectRaket2[Vector2D.U_LEFT_X.ordinal()], vectRaket2[Vector2D.U_LEFT_Y.ordinal()], this);
 		g.drawImage(ball, vectBall[Vector2D.U_LEFT_X.ordinal()], vectBall[Vector2D.U_LEFT_Y.ordinal()], this);
-		/*if(inGame) {
-			
-		}
-		else{
-			g.setColor(Color.white);
-			if(player1W) {
-				g.drawString("PLAYER1 WON", 348, 275);
-			}
-			else {
-				g.drawString("PLAYER1 WON", 348, 275);
-			}
-		}*/
+		
 	}
+	
 	
 	public void moveRaket1(){
 		if(up){
@@ -163,24 +179,30 @@ public class Game extends JPanel implements ActionListener{
 	}
 
 	public void moveRaket2() {
-		if(vectBall[Vector2D.SPEED_X.ordinal()] > 0 && vectBall[Vector2D.U_RIGHT_X.ordinal()] > 500) {
-			if(vectBall[Vector2D.U_RIGHT_Y.ordinal()] < vectRaket2[Vector2D.D_LEFT_Y.ordinal()] - 24) {
-				if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] > 0) {
-					for(int i = 1; i < 8; i += 2){
-						vectRaket2[i] -= STEP;
+		if(hardMode == true) {
+			if(vectBall[Vector2D.SPEED_X.ordinal()] > 0 && vectBall[Vector2D.U_RIGHT_X.ordinal()] > 500) {
+				if(vectBall[Vector2D.U_RIGHT_Y.ordinal()] < vectRaket2[Vector2D.D_LEFT_Y.ordinal()] - 24) {
+					if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] > 0) {
+						for(int i = 1; i < 8; i += 2){
+							vectRaket2[i] -= STEP;
+						}
 					}
 				}
-			}
-			
-			if(vectBall[Vector2D.D_RIGHT_Y.ordinal()] > vectRaket2[Vector2D.U_LEFT_Y.ordinal()] + 24) {
-				if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] < 524){
-					for(int i = 1; i < 8; i += 2){
-						vectRaket2[i] += STEP;
+				
+				if(vectBall[Vector2D.D_RIGHT_Y.ordinal()] > vectRaket2[Vector2D.U_LEFT_Y.ordinal()] + 24) {
+					if(vectRaket2[Vector2D.U_LEFT_Y.ordinal()] < 524){
+						for(int i = 1; i < 8; i += 2){
+							vectRaket2[i] += STEP;
+						}
 					}
 				}
 			}
 		}
+		else {
+			
+		}
 	}
+	
 	
 	public void moveBall(){
 		for(int i = 0, j = 1; i < 8; i += 2, j += 2){
@@ -189,6 +211,7 @@ public class Game extends JPanel implements ActionListener{
 		}
 		collision();
 	}
+	
 
 	public void collision(){
 		if(vectBall[Vector2D.SPEED_X.ordinal()] < 0){
@@ -198,7 +221,7 @@ public class Game extends JPanel implements ActionListener{
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
 				if(vectBall[Vector2D.U_LEFT_X.ordinal()] < 16){
-					player1W = false;
+					inMenu = false;
 					inGame = false;
 				}
 			}
@@ -213,7 +236,7 @@ public class Game extends JPanel implements ActionListener{
 					vectBall[Vector2D.SPEED_X.ordinal()] *= -1;
 				}
 				if(vectBall[Vector2D.U_LEFT_X.ordinal()] > 786){
-					player1W = true;
+					inMenu = false;
 					inGame = false;
 				}
 			}
@@ -222,6 +245,7 @@ public class Game extends JPanel implements ActionListener{
 			}
 		}
 	}
+	
 
 	public void loadImages(){
 		ImageIcon iraket = new ImageIcon("Images/raket.png");
@@ -237,8 +261,13 @@ public class Game extends JPanel implements ActionListener{
 	}
 	
 	public void menu() {
-		esc = true;
-		
+		mainMenu.setVisible(true);
+		button1.setFocusable(false);
+		button2.setFocusable(false);
+		if(esc == false) {
+			esc = true;
+			
+		}
 	}
 	
 	@Override
@@ -251,17 +280,8 @@ public class Game extends JPanel implements ActionListener{
 			moveBall();
 		}
 		else if(inMenu){
-			mainMenu.setVisible(true);
-			setFocusable(true);
-		}
-		else {
-			System.exit(0);
+			menu();
 		}
 		repaint();
 	}
-	
-	@Override
-    public boolean isOptimizedDrawingEnabled() {
-        return false;
-    }
-} 	
+}
