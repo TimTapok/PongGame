@@ -282,6 +282,9 @@ public class Game extends JPanel implements ActionListener{
 		else if(inMenu){
 			menu();
 		}
+		else {
+			System.exit(0);
+		}
 		repaint();
 	}
 }
