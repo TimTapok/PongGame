@@ -315,9 +315,8 @@ public class Game extends JPanel implements ActionListener{
 			menu();
 		}
 		else {
-			
+			setFocusable(false);
 			menu();
-			//System.exit(0);
 		}
 		repaint();
 	}
