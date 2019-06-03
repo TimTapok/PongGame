@@ -7,13 +7,11 @@ import components.*;
 
 public class Window extends JFrame{
 	
-	
 	Window(){
 		setTitle("Pong Game");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((screenSize.width - BackGround.WIDTH) / 2, (screenSize.height - BackGround.HEIGHT) / 2);
+		setLocation((BackGround.screenSize.width - BackGround.WIDTH) / 2, (BackGround.screenSize.height - BackGround.HEIGHT) / 2);
 		
 		add(new Game());
 		
