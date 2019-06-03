@@ -16,7 +16,7 @@ import javafx.scene.layout.Border;
 public class Game extends JPanel implements ActionListener{
 	
 	private JPanel mainMenu, gameO;
-	private JButton button1, button2;
+	private JButton newGameButton, exitButton;
 	private JCheckBox hardBox;
 	
 	private enum Vector2D{
@@ -82,9 +82,9 @@ public class Game extends JPanel implements ActionListener{
         mainMenu.setBounds(300, 100, 200, 400);
         mainMenu.setBackground(new Color(66, 48, 88, 150));
         
-        button1 = new JButton("New Game");
-        button1.setBounds(50, 20, 100, 50);
-        button1.addActionListener(new ActionListener() {
+        newGameButton = new JButton("New Game");
+        newGameButton.setBounds(50, 20, 100, 50);
+        newGameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
          	   if(e.getActionCommand().equals("New Game")) {
     				initGame();
@@ -92,9 +92,9 @@ public class Game extends JPanel implements ActionListener{
             }
         });
         
-        button2 = new JButton("Exit");
-        button2.setBounds(50, 160, 100, 50);
-        button2.addActionListener(new ActionListener() {
+        exitButton = new JButton("Exit");
+        exitButton.setBounds(50, 160, 100, 50);
+        exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
          	   if(e.getActionCommand().equals("Exit")) {
     				System.exit(0);
@@ -111,8 +111,8 @@ public class Game extends JPanel implements ActionListener{
 			}
         });
         
-        mainMenu.add(button1);
-        mainMenu.add(button2);
+        mainMenu.add(newGameButton);
+        mainMenu.add(exitButton);
         mainMenu.add(hardBox);
         
         gameO = new JPanel();
@@ -139,6 +139,8 @@ public class Game extends JPanel implements ActionListener{
 			timer = new Timer(10, this);
 			timer.start();
 		}
+		
+		setFocusable(true);
 	}
 	
 	public void createRaket1() {
@@ -291,8 +293,8 @@ public class Game extends JPanel implements ActionListener{
 	
 	public void menu() {
 		mainMenu.setVisible(true);
-		button1.setFocusable(false);
-		button2.setFocusable(false);
+		newGameButton.setFocusable(false);
+		exitButton.setFocusable(false);
 		hardBox.setFocusable(false);
 	}
 	
@@ -315,7 +317,7 @@ public class Game extends JPanel implements ActionListener{
 			menu();
 		}
 		else {
-			setFocusable(false);
+			mainMenu.setFocusable(true);
 			menu();
 		}
 		repaint();
